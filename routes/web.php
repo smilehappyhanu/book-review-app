@@ -40,6 +40,8 @@ Route::group(['prefix' => 'account'],function(){
         Route::get('my-review/{id}',[AccountController::class,'editMyReview'])->name('myReview.edit');
         Route::post('my-review/{id}',[AccountController::class,'updateMyReview'])->name('myReview.update');
         Route::delete('my-review/delete',[AccountController::class,'deleteMyReview'])->name('myReview.delete');
+        Route::get('change-pw',[AccountController::class,'changePw'])->name('account.changePw');
+        Route::post('handle-change-pw',[AccountController::class,'handleChangePw'])->name('account.handleChangePw');
         Route::get('logout',[AccountController::class,'logout'])->name('account.logout');
 
         // Book routes

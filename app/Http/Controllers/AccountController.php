@@ -156,5 +156,33 @@ class AccountController extends Controller
             'status' => true
         ]);
     }
+
+    public function changePw() {
+        $user = User::find(Auth::user()->id);
+        return view('account.change-password',compact('user'));
+    }
+
+    public function handleChangePw(Request $request) {
+        $validator = Validator::make($request->all(),[
+            'old_password' => 'required',
+            'new_password' => 'required|min:8|max:24',
+            'confirm_password' => 'required|min:8|max:24|same:new_password',
+        ]);
+        if($validator->fails()) {
+            return redirect()->route('account.changePw')->withInput()->withErrors($validator);
+        } else {
+            $user = User::select('id','password')->where('id',Auth::user()->id)->first();
+            if(!Hash::check($request->old_password,$user->password)) {
+                return redirect()->route('account.changePw')->with('error','Old password is not correct.');
+            } else {
+                $user = User::find(Auth::user()->id);
+                $user->password = Hash::make($request->new_password);
+                $user->save();
+        
+                session()->flush();
+                return redirect()->route('account.login')->with('success','You have changed password successfully.');
+            }
+        }      
+    }
 }
 
